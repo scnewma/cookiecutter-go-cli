@@ -1,0 +1,5 @@
+{
+    "project_slug": "gocli",
+    "github_username": "scnewma",
+    "go_module": "github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
+}

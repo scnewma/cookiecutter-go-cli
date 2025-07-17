@@ -1,0 +1,46 @@
+set quiet
+
+alias b := build
+alias r := run
+alias t := test
+alias tf := filter
+
+root_dir := justfile_directory()
+bin_dir := root_dir / "bin"
+
+default:
+    just --list
+
+[group: 'misc']
+build:
+    mkdir -p {{ "{{" }} bin_dir {{ "}}" }}
+    go build -o {{ "{{" }} bin_dir {{ "}}" }}/{{ cookiecutter.project_slug }} .
+
+[group: 'misc']
+run: build
+    {{ "{{" }} bin_dir {{ "}}" }}/{{ cookiecutter.project_slug }}
+
+[group: 'misc']
+generate:
+    go generate ./...
+
+[group: 'test']
+test PKG='./...':
+    go test -v -race -cover {{ "{{" }} PKG {{ "}}" }}
+
+# only run tests matching pattern
+[group: 'test']
+filter PATTERN:
+    go test -v -race -cover -run '{{ "{{" }} PATTERN {{ "}}" }}' ./...
+
+[group: 'check']
+check: lint vet
+
+[group: 'check']
+lint:
+    golangci-lint run --fix
+
+[group: 'check']
+vet:
+    go vet ./...
+
